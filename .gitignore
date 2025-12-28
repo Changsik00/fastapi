@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -116,3 +117,28 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+=======
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+
+# Universal
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+
+# Gemini
+.gemini/
+>>>>>>> df6dc60 (feat: Implement CRUD API endpoints for Item resource)
