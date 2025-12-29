@@ -8,7 +8,7 @@ class InMemoryItemRepository(ItemRepository):
         self._next_id = 1
 
     def create(self, item: ItemCreate) -> Item:
-        new_item = Item(id=self._next_id, **item.dict())
+        new_item = Item(id=self._next_id, **item.model_dump())
         self._items[self._next_id] = new_item
         self._next_id += 1
         return new_item

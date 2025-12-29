@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 class ItemBase(BaseModel):
@@ -11,5 +11,4 @@ class ItemCreate(ItemBase):
 class Item(ItemBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
