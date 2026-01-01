@@ -1,9 +1,12 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.domain.models.item import Item, ItemCreate
 from app.domain.repository_interfaces.item import ItemRepository
-from app.infrastructure.repositories.in_memory_item_repository import InMemoryItemRepository
+from app.infrastructure.repositories.postgres_item_repository import PostgresItemRepository
 from app.services.item_service import ItemService
+from app.core.database import get_session
 
 router = APIRouter(
     prefix="/items",
@@ -11,42 +14,37 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-# ...
-# In a real app, this might be a module-level variable
-# or managed by a more sophisticated dependency injection container.
-_in_memory_item_repository = InMemoryItemRepository()
-
-def get_item_repository() -> ItemRepository:
-    return _in_memory_item_repository
+def get_item_repository(session: AsyncSession = Depends(get_session)) -> ItemRepository:
+    return PostgresItemRepository(session)
 
 def get_item_service(item_repository: ItemRepository = Depends(get_item_repository)) -> ItemService:
     return ItemService(item_repository)
 
 @router.post("/", response_model=Item, status_code=status.HTTP_201_CREATED)
-def create_item(item: ItemCreate, service: ItemService = Depends(get_item_service)):
-    return service.create_item(item)
+async def create_item(item: ItemCreate, service: ItemService = Depends(get_item_service)):
+    return await service.create_item(item)
 
 @router.get("/", response_model=List[Item])
-def read_items(service: ItemService = Depends(get_item_service)):
-    return service.get_items()
+async def read_items(service: ItemService = Depends(get_item_service)):
+    return await service.get_items()
 
 @router.get("/{item_id}", response_model=Item)
-def read_item(item_id: int, service: ItemService = Depends(get_item_service)):
-    item = service.get_item(item_id)
+async def read_item(item_id: int, service: ItemService = Depends(get_item_service)):
+    item = await service.get_item(item_id)
     if item is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
     return item
 
 @router.put("/{item_id}", response_model=Item)
-def update_item(item_id: int, item: ItemCreate, service: ItemService = Depends(get_item_service)):
-    updated_item = service.update_item(item_id, item)
+async def update_item(item_id: int, item: ItemCreate, service: ItemService = Depends(get_item_service)):
+    updated_item = await service.update_item(item_id, item)
     if updated_item is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
     return updated_item
 
 @router.delete("/{item_id}", status_code=status.HTTP_200_OK)
-def delete_item(item_id: int, service: ItemService = Depends(get_item_service)):
-    deleted_item = service.delete_item(item_id)
+async def delete_item(item_id: int, service: ItemService = Depends(get_item_service)):
+    deleted_item = await service.delete_item(item_id)
     if deleted_item is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
     return {"message": "Item deleted successfully"}

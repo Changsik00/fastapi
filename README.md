@@ -64,11 +64,11 @@ app/
 5. **Analyze**: 기존 코드 영향도 분석
 6. **Implement**: 코드 구현 및 테스트
 
-> 💡 자세한 절차는 [Constitution](.specify/memory/constitution.md)을 참고하세요.
+
 
 ## 🚀 Learning Roadmap (To-Do)
 - [x] ~~**1. Configuration**: `pydantic-settings` & `.env` file implementation.~~
-- [ ] **2. Real Database**: Replace InMemory with `SQLModel` & `SQLite`.
+- [x] ~~**2. Real Database**: Replace InMemory with `SQLModel` & `SQLite` (Actual: Supabase PostgreSQL).~~
 - [ ] **3. Async Database**: Convert Repository/Service to `async`/`await`.
 - [ ] **4. Migrations**: Database schema management with `Alembic`.
 - [ ] **5. Dependency Injection**: Refactor `main.py` using `Depends` for dependency chains.

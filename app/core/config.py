@@ -11,5 +11,6 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI Clean Architecture"
     API_V1_STR: str = "/api/v1"
     MODE: Literal["dev", "prod", "test"] = "dev"
+    DATABASE_URL: str
 
 settings = Settings()

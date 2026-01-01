@@ -1,14 +1,12 @@
-from pydantic import BaseModel, ConfigDict
 from typing import Optional
+from sqlmodel import Field, SQLModel
 
-class ItemBase(BaseModel):
+class ItemBase(SQLModel):
     name: str
     description: Optional[str] = None
 
+class Item(ItemBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
 class ItemCreate(ItemBase):
     pass
-
-class Item(ItemBase):
-    id: int
-
-    model_config = ConfigDict(from_attributes=True)
