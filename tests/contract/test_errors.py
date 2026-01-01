@@ -1,12 +1,12 @@
-from fastapi.testclient import TestClient
-from app.main import app
+import pytest
+from httpx import AsyncClient
 
-client = TestClient(app)
-
-def test_404_handler():
-    response = client.get("/non-existent-route")
+@pytest.mark.asyncio
+async def test_404_error(client: AsyncClient):
+    response = await client.get("/non-existent-route")
     assert response.status_code == 404
-    data = response.json()
-    assert data["code"] == "NOT_FOUND"
-    assert data["message"] == "The requested resource was not found"
-    assert data["path"] == "/non-existent-route"
+    assert response.json() == {
+        "code": "NOT_FOUND",
+        "message": "The requested resource was not found",
+        "path": "/non-existent-route"
+    }

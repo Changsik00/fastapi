@@ -1,0 +1,23 @@
+# Tasks: Real Database (PostgreSQL)
+
+- [ ] **Dependencies**: Install libraries <!-- id: 1 -->
+    - [ ] Add `sqlmodel`, `asyncpg`, `greenlet` to `requirements.txt`
+    - [ ] Run `uv pip install -r requirements.txt`
+- [ ] **Core**: Database Setup (`app/core/database.py`) <!-- id: 2 -->
+    - [ ] Create `AsyncEngine` using `settings.DATABASE_URL`
+    - [ ] Create `get_session` dependency generator
+- [ ] **Domain**: Update Model (`app/domain/models/item.py`) <!-- id: 3 -->
+    - [ ] Change `Item` to inherit from `SQLModel`
+    - [ ] Add `table=True`
+    - [ ] Add `id` field with `primary_key=True`
+- [ ] **Infrastructure**: PostgreSQL Repository <!-- id: 4 -->
+    - [ ] Create `app/infrastructure/repositories/postgres_item_repository.py`
+    - [ ] Implement `ItemRepository` interface using `AsyncSession`
+- [ ] **Integration**: Wiring it up (`app/main.py`) <!-- id: 5 -->
+    - [ ] Add `@asynccontextmanager` lifecyle to create tables on startup
+    - [ ] Change `get_item_repository` to return `PostgresItemRepository`
+- [ ] **Verify**: Test Persistence <!-- id: 6 -->
+    - [ ] Start server
+    - [ ] Create an Item via API
+    - [ ] Restart server
+    - [ ] Get Item via API -> Should exist

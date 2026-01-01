@@ -5,21 +5,21 @@ from app.domain.models.item import Item, ItemCreate
 class ItemRepository(ABC):
 
     @abstractmethod
-    def create(self, item: ItemCreate) -> Item:
+    async def create(self, item: ItemCreate) -> Item:
         pass
 
     @abstractmethod
-    def get_by_id(self, item_id: int) -> Optional[Item]:
+    async def get_by_id(self, item_id: int) -> Optional[Item]:
         pass
 
     @abstractmethod
-    def get_all(self) -> List[Item]:
+    async def get_all(self) -> List[Item]:
         pass
 
     @abstractmethod
-    def update(self, item_id: int, item: ItemCreate) -> Optional[Item]:
+    async def update(self, item_id: int, item: ItemCreate) -> Optional[Item]:
         pass
 
     @abstractmethod
-    def delete(self, item_id: int) -> Optional[Item]:
+    async def delete(self, item_id: int) -> Optional[Item]:
         pass

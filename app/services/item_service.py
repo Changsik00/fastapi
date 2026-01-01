@@ -6,17 +6,17 @@ class ItemService:
     def __init__(self, item_repository: ItemRepository):
         self.item_repository = item_repository
 
-    def create_item(self, item: ItemCreate) -> Item:
-        return self.item_repository.create(item)
+    async def create_item(self, item: ItemCreate) -> Item:
+        return await self.item_repository.create(item)
 
-    def get_items(self) -> List[Item]:
-        return self.item_repository.get_all()
+    async def get_items(self) -> List[Item]:
+        return await self.item_repository.get_all()
 
-    def get_item(self, item_id: int) -> Optional[Item]:
-        return self.item_repository.get_by_id(item_id)
+    async def get_item(self, item_id: int) -> Optional[Item]:
+        return await self.item_repository.get_by_id(item_id)
 
-    def update_item(self, item_id: int, item: ItemCreate) -> Optional[Item]:
-        return self.item_repository.update(item_id, item)
+    async def update_item(self, item_id: int, item: ItemCreate) -> Optional[Item]:
+        return await self.item_repository.update(item_id, item)
 
-    def delete_item(self, item_id: int) -> Optional[Item]:
-        return self.item_repository.delete(item_id)
+    async def delete_item(self, item_id: int) -> Optional[Item]:
+        return await self.item_repository.delete(item_id)
