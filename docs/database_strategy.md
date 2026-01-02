@@ -1,52 +1,52 @@
-# Database Strategy: SQLModel, Alembic, and Asyncpg
+# 데이터베이스 전략: SQLModel, Alembic, 그리고 asyncpg
 
-This document explains the architectural decisions behind our database stack.
+이 문서는 우리 프로젝트의 데이터베이스 기술 스택 선정 이유와 아키텍처 결정을 설명합니다.
 
-## 1. Why Alembic? (Migration Management)
+## 1. 왜 Alembic인가? (마이그레이션 관리)
 
-We chose **Alembic** to manage database migrations for the following critical reasons:
+우리는 데이터베이스 스키마 변경을 관리하기 위해 **Alembic**을 선택했습니다. 그 이유는 다음과 같습니다.
 
-### 1. Data Preservation & Incremental Changes
-`SQLModel.metadata.create_all()` only creates missing tables. It cannot handle modifications (e.g., adding a column) to existing tables without data loss. Alembic detects changes (Diff) and generates scripts to apply them while preserving data.
+### 1. 데이터 보존 및 점진적 변경
+`SQLModel.metadata.create_all()`은 테이블이 없을 때 생성하는 기능만 있습니다. 이미 데이터가 존재하는 상태에서 필드를 추가하거나 변경할 때, 기존 데이터를 유지하면서 스키마만 안전하게 업데이트(Diff 반영)하기 위해 Alembic이 필수적입니다.
 
-### 2. Version Control & Rollback
-Alembic treats DB state like code:
-- **History**: Tracks who changed what and when.
-- **Rollback**: Allows safely reverting to a previous version (`downgrade`) if a deployment fails.
+### 2. 버전 관리 및 롤백 (Version Control)
+Alembic은 데이터베이스 상태를 코드처럼 버전별로 관리합니다.
+- **히스토리 추적**: 누가, 언제, 어떤 이유로 DB 구조를 바꿨는지 기록이 남습니다.
+- **롤백**: 배포 후 문제가 생기면 이전 버전(`downgrade`)으로 안전하게 되돌릴 수 있습니다.
 
-### 3. Collaboration & Environment Consistency
-Ensures all developers and environments (Dev, Test, Prod) share the exact same schema. Running `alembic upgrade head` synchronizes the local DB with the codebase.
+### 3. 협업 및 환경 일치
+모든 개발자와 배포 환경(Dev, Test, Prod)이 동일한 DB 구조를 갖도록 보장합니다. `alembic upgrade head` 명령어 하나로 로컬 DB를 최신 상태로 동기화할 수 있습니다.
 
-### 4. Autogenerate (Productivity)
-Alembic compares `SQLModel` code with the actual DB to automatically generate migration scripts (`alembic revision --autogenerate`). This reduces manual SQL writing and errors.
+### 4. 자동 생성 기능 (Autogenerate)
+Alembic은 `SQLModel` 코드와 실제 DB 상태를 비교하여 마이그레이션 스크립트를 자동으로 생성해 줍니다(`alembic revision --autogenerate`). 이는 복잡한 SQL 작성 실수를 줄여줍니다.
 
-### 5. Production Safety
-In production, dropping tables is not an option. Alembic provides the standard, safe workflow for evolving the schema without downtime.
-
----
-
-## 2. What is asyncpg? (Async Driver)
-
-**asyncpg** is a high-performance PostgreSQL driver for Python's `asyncio`.
-
-### 1. Performance
-It interacts directly with PostgreSQL's binary protocol, offering significantly higher performance (often 5x faster) than traditional drivers like `psycopg2`.
-
-### 2. Full Async Support
-It allows non-blocking database I/O, which is essential for FastAPI's high-concurrency model. The CPU can handle other requests while waiting for DB queries to return.
+### 5. 운영 환경의 안전성
+서비스 중인 운영 환경에서는 테이블을 삭제하고 다시 만들 수 없습니다. Alembic은 서비스 중단 없이 스키마를 점진적으로 변경할 수 있는 표준적인 방법을 제공합니다.
 
 ---
 
-## 3. The Trinity: SQLModel + Alembic + asyncpg
+## 2. 왜 asyncpg인가? (비동기 드라이버)
 
-We combine these three tools to create a robust, high-performance stack:
+**asyncpg**는 Python 비동기 프레임워크(`asyncio`)를 위한 고성능 PostgreSQL 드라이버입니다.
 
-| Tool | Role | Analogy |
-|------|------|---------|
-| **SQLModel** | Data Structure & Queries | Blueprint / Spec |
-| **Alembic** | Schema Change Management | Git for Database |
-| **asyncpg** | High-speed Async Communication | Dedicated Express Line |
+### 1. 압도적인 성능
+PostgreSQL의 내부 바이너리 프로토콜을 직접 구현하여, 기존 `psycopg2`보다 평균 5배 이상 빠른 성능을 자랑합니다.
 
-### How they interact in this project:
-- **Execution**: `SQLModel` uses `sqlalchemy.ext.asyncio` + `asyncpg` to execute queries (CRUD).
-- **Migration**: `Alembic` (configured with `async` template) shares the same `asyncpg` driver to inspect and upgrade the database.
+### 2. 완전 비동기 지원 (Full Async)
+데이터베이스 I/O가 발생하는 동안 서버가 멈추지 않고 다른 사용자의 요청을 처리할 수 있게 해줍니다. 이는 높은 동시성을 요구하는 FastAPI의 성능을 극대화하는 데 필수적입니다.
+
+---
+
+## 3. 삼위일체: SQLModel + Alembic + asyncpg
+
+우리는 이 세 가지 도구를 조합하여 강력하고 빠른 인프라를 구축했습니다.
+
+| 도구 | 역할 | 비유 |
+|------|------|------|
+| **SQLModel** | 데이터 구조 정의 및 쿼리 작성 | 설계도 및 작업 지시서 |
+| **Alembic** | 데이터베이스 구조 변경 관리 | DB의 Git (버전 관리) |
+| **asyncpg** | 실제 DB와 데이터를 주고받는 통로 | 고속 비동기 전용 회선 |
+
+### 프로젝트 내 상호작용:
+- **실행 (Execution)**: `SQLModel`은 `sqlalchemy.ext.asyncio`와 `asyncpg`를 통해 고속으로 쿼리를 실행합니다.
+- **마이그레이션 (Migration)**: `Alembic`(비동기 설정 적용됨)은 동일한 `asyncpg` 드라이버를 사용하여 DB를 검사하고 스키마를 업그레이드합니다.
