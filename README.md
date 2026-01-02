@@ -53,6 +53,8 @@ app/
 
 ## 📚 Documentation
 - **Detailed Docs**: [docs/](docs/)
+  - [Clean Architecture Q&A](docs/clean_architecture_qna.md)
+  - [Clean Architecture Concept & Diagram](docs/clean_architecture_concept.md)
 - **Feature Specs**: [specs/](specs/)
 - **Architecture**: [Constitution](.specify/memory/constitution.md)
 
