@@ -25,5 +25,11 @@ Since `Item` inherits from `ItemBase`, validation rules on `ItemBase` will apply
     - Invalid chars: "Apple!", "N@me"
     - Forbidden: "admin"
 
-## 3. Verification
+## 3. Database Schema Migration (Updates)
+Since we added `max_length` to `Field`, we should reflect this in the database schema to prevent direct SQL inserts of invalid data.
+1.  Run `uv run alembic revision --autogenerate -m "Apply length constraints to item table"`
+2.  Run `uv run alembic upgrade head`
+
+## 4. Verification
 - `pytest tests/unit/test_item_validation.py`
+- Check `alembic` output to ensure `VARCHAR(50)` is applied.
