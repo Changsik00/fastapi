@@ -1,24 +1,15 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.deps import get_item_service
 from app.domain.models.item import Item, ItemCreate
-from app.domain.repository_interfaces.item import ItemRepository
-from app.infrastructure.repositories.postgres_item_repository import PostgresItemRepository
 from app.services.item_service import ItemService
-from app.core.database import get_session
 
 router = APIRouter(
     prefix="/items",
     tags=["items"],
     responses={404: {"description": "Not found"}},
 )
-
-def get_item_repository(session: AsyncSession = Depends(get_session)) -> ItemRepository:
-    return PostgresItemRepository(session)
-
-def get_item_service(item_repository: ItemRepository = Depends(get_item_repository)) -> ItemService:
-    return ItemService(item_repository)
 
 @router.post("/", response_model=Item, status_code=status.HTTP_201_CREATED)
 async def create_item(item: ItemCreate, service: ItemService = Depends(get_item_service)):
