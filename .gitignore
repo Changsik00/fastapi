@@ -127,7 +127,7 @@ Thumbs.db
 *.swp
 
 # IDE / Editor
-.vscode/
+# .vscode/
 .idea/
 
 # Gemini (추가된 부분)
