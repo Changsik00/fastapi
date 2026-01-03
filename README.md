@@ -35,42 +35,42 @@ uv run uvicorn app.main:app --reload
 uv run pytest
 ```
 
-## 4. Project Structure (Clean Architecture)
-The project follows a strict Clean Architecture layout:
+## 4. 프로젝트 구조 (Clean Architecture)
+이 프로젝트는 엄격한 **Clean Architecture** 구조를 따릅니다:
 
 ```
 app/
-├── main.py              # Application Entrypoint
-├── api/                 # Presentation Layer (Routes, Dependency Injection)
+├── main.py              # 애플리케이션 진입점 (Entrypoint)
+├── api/                 # 프레젠테이션 계층 (라우트, 의존성 주입)
 │   └── v1/
-├── core/                # Core Utilities, Config, Exceptions
-├── services/            # Application Layer (Business Logic, Use Cases)
-├── domain/              # Domain Layer (Entities, Repository Interfaces)
+├── core/                # 핵심 유틸리티, 설정, 예외 처리
+├── services/            # 애플리케이션 계층 (비즈니스 로직, 유스케이스)
+├── domain/              # 도메인 계층 (엔티티, 레포지토리 인터페이스)
 │   ├── models/
 │   └── repository_interfaces/
-└── infrastructure/      # Infrastructure Layer (DB, External APIs)
+└── infrastructure/      # 인프라 계층 (DB, 외부 API)
 ```
 
-## 📚 Documentation
-- **Detailed Docs**: [docs/](docs/)
-  - **[Clean Architecture Q&A](docs/clean_architecture_qna.md)**: Frequently asked questions about the architecture.
-  - **[Database Strategy](docs/database_strategy.md)**: Why we use SQLModel, Alembic, and Asyncpg.
-  - **[Database Migration Guide (Safety Manual)](docs/database_migration_guide.md)**: ⚠️ Operation manual for safe schema changes.
-- **Feature Specs**: [specs/](specs/)
-- **Architecture**: [Constitution](.specify/memory/constitution.md)
+## 📚 문서 (Documentation)
+- **상세 문서**: [docs/](docs/)
+  - **[Clean Architecture Q&A](docs/clean_architecture_qna.md)**: 아키텍처 관련 질의응답.
+  - **[Database Strategy](docs/database_strategy.md)**: SQLModel, Alembic, Asyncpg 사용 배경.
+  - **[Database Migration Guide (Safety Manual)](docs/database_migration_guide.md)**: ⚠️ 안전한 스키마 변경을 위한 운영 매뉴얼.
+- **기능 명세 (Specs)**: [specs/](specs/)
+- **아키텍처 헌법**: [Constitution](.specify/memory/constitution.md)
 
-## 🤖 AI Agent Guide
-This project is designed to be agent-friendly. If you are an AI agent (or a human pretending to be one), please read the following:
-- **Bootstrap Protocol**: [agent.md](agent.md) (Read this first!)
-- **Constitution**: [.specify/memory/constitution.md](.specify/memory/constitution.md) (The Supreme Law)
+## 🤖 AI 에이전트 가이드 (AI Agent Guide)
+이 프로젝트는 AI 에이전트 친화적으로 설계되었습니다. 에이전트(또는 에이전트 역할을 하는 사람)는 다음을 필독하세요:
+- **부트스트랩 프로토콜**: [agent.md](agent.md) (가장 먼저 읽으세요!)
+- **헌법 (Constitution)**: [.specify/memory/constitution.md](.specify/memory/constitution.md) (최상위 규칙)
 
-## 📜 Contributing
-All contributions must follow the **Strict SDD** workflow defined in `agent.md`.
-1. **Branch First**: Always create a new branch.
-2. **Plan First**: Propose a plan and get approval.
-3. **Spec-Kit**: Use `spec-kit` tools where possible.
+## 📜 기여 가이드 (Contributing)
+모든 기여는 `agent.md`에 정의된 **Strict SDD** 워크플로우를 따라야 합니다.
+1. **Branch First**: 항상 새로운 브랜치를 생성하세요.
+2. **Plan First**: 먼저 계획을 제안하고 승인을 받으세요.
+3. **Spec-Kit**: 가능한 경우 `spec-kit` 도구를 사용하세요.
 
-## 📝 Workflow
+## 📝 워크플로우 (Workflow)
 1. **Specify**: 기능 명세 작성 (`specs/{branch}/spec.md`)
 2. **Clarify**: 요구사항 구체화 및 질문 해결
 3. **Plan**: 기술 설계 및 아키텍처 수립
@@ -78,30 +78,30 @@ All contributions must follow the **Strict SDD** workflow defined in `agent.md`.
 5. **Analyze**: 기존 코드 영향도 분석
 6. **Implement**: 코드 구현 및 테스트
 
-## 🧪 Testing
-We use `pytest` for testing.
+## 🧪 테스트 (Testing)
+테스트는 `pytest`를 사용합니다.
 
 ```bash
 uv run pytest
 ```
 
-### Testing Strategy (Database Isolation)
-To avoid polluting the real database (e.g., Supabase) during tests, we use **In-Memory SQLite**.
-- **Run-time**: App connects to Real DB (PostgreSQL) via `.env`.
-- **Test-time**: `tests/conftest.py` overrides the database dependency to use `sqlite+aiosqlite:///:memory:`.
-- This ensures tests are fast, isolated, and safe to run anywhere.
+### 테스트 전략 (DB 격리)
+실제 데이터베이스(예: Supabase) 오염을 방지하기 위해 **In-Memory SQLite**를 사용합니다.
+- **Run-time**: 앱은 `.env` 설정을 통해 실제 DB(PostgreSQL)에 연결합니다.
+- **Test-time**: `tests/conftest.py`가 DB 의존성을 `sqlite+aiosqlite:///:memory:`로 오버라이드합니다.
+- 이를 통해 어디서든 빠르고 안전하게 테스트를 수행할 수 있습니다.
 
 > 💡 자세한 절차는 [Constitution](.specify/memory/constitution.md)을 참고하세요.
 
 
-## 🚀 Learning Roadmap (To-Do)
-- [x] ~~**1. Configuration**: `pydantic-settings` & `.env` file implementation.~~
-- [x] ~~**2. Real Database**: Replace InMemory with `SQLModel` & `SQLite` (Actual: Supabase PostgreSQL).~~
-- [x] ~~**3. Async Database**: Convert Repository/Service to `async`/`await` (Already done with Real DB).~~
-- [x] ~~**4. Migrations**: Database schema management with `Alembic`.~~
-- [x] ~~**5. Dependency Injection**: Refactor `main.py` using `Depends` for dependency chains.~~
-- [x] ~~**6. Item Validation**: Apply strict Pydantic validators to Item model.~~
-- [ ] **7. Authentication**: Implement JWT Login & User Domain.
+## 🚀 학습 로드맵 (To-Do)
+- [x] ~~**1. Configuration**: `pydantic-settings` 및 `.env` 파일 구현.~~
+- [x] ~~**2. Real Database**: InMemory를 `SQLModel` & `SQLite`로 교체 (실제: Supabase PostgreSQL).~~
+- [x] ~~**3. Async Database**: Repository/Service를 `async`/`await`로 변환 (Real DB와 함께 완료).~~
+- [x] ~~**4. Migrations**: `Alembic`을 이용한 데이터베이스 스키마 관리.~~
+- [x] ~~**5. Dependency Injection**: `Depends`를 사용하여 `main.py` 의존성 체인 리팩토링.~~
+- [x] ~~**6. Item Validation**: Item 모델에 엄격한 Pydantic validator 적용.~~
+- [ ] **7. Authentication**: JWT 로그인 및 사용자 도메인 구현.
 
 ---
 *Generated by Vibe Coding with Agentic Workflow.*
