@@ -5,27 +5,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from app.api import deps
 from app.core.config import settings
-from app.domain.models.user import User, UserRole
+from app.domain.models.user import User, UserRole, Token, UserCreate, UserResponse
 from app.domain.repository_interfaces.user_repository import UserRepository
 from app.services.auth_service import AuthService
-from pydantic import BaseModel, EmailStr
 
 router = APIRouter()
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-class UserCreate(BaseModel):
-    email: EmailStr
-    password: str
-    role: UserRole = UserRole.USER
-
-class UserResponse(BaseModel):
-    id: int
-    email: EmailStr
-    is_active: bool
-    role: UserRole
 
 @router.post("/login", response_model=Token)
 async def login_access_token(
