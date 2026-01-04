@@ -20,3 +20,8 @@ aiosqlite
 httpx
 pytest-asyncio
 alembic
+passlib[bcrypt]
+python-jose[cryptography]
+email-validator
+python-multipart
+argon2-cffi
