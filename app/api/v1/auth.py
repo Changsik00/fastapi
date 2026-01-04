@@ -36,21 +36,15 @@ async def login_access_token(
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    user = await user_repo.get_by_email(email=form_data.username)
-    if not user or not auth_service.verify_password(form_data.password, user.hashed_password):
+    token = await auth_service.login(user_repo=user_repo, form_data=form_data)
+        
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    if not user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive user")
-        
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = auth_service.create_access_token(
-        subject=user.email, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer"}
 
 @router.post("/signup", response_model=UserResponse)
 async def create_user(
@@ -61,19 +55,11 @@ async def create_user(
     """
     Create new user without the need to be logged in
     """
-    user = await user_repo.get_by_email(email=user_in.email)
-    if user:
-        raise HTTPException(
+    try:
+        user = await auth_service.signup(user_repo=user_repo, user_create_data=user_in)
+    except ValueError as e:
+         raise HTTPException(
             status_code=400,
             detail="The user with this email already exists in the system",
         )
-    
-    hashed_password = auth_service.get_password_hash(user_in.password)
-    user_create = User(
-        email=user_in.email,
-        hashed_password=hashed_password,
-        role=user_in.role,
-        is_active=True,
-    )
-    user = await user_repo.create(user=user_create)
     return user
