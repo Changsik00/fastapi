@@ -1,6 +1,6 @@
 from typing import List, Optional
 from app.domain.models.item import Item, ItemCreate
-from app.domain.repository_interfaces.item import ItemRepository
+from app.domain.repository_interfaces.item_repository import ItemRepository
 
 class ItemService:
     def __init__(self, item_repository: ItemRepository):

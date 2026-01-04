@@ -1,7 +1,7 @@
 from typing import List, Optional, Dict
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.domain.models.item import Item, ItemCreate
-from app.domain.repository_interfaces.item import ItemRepository
+from app.domain.repository_interfaces.item_repository import ItemRepository
 
 class InMemoryItemRepository(ItemRepository):
     def __init__(self, session: AsyncSession = None):

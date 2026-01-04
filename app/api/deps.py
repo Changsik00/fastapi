@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.database import get_session
-from app.domain.repository_interfaces.item import ItemRepository
+from app.domain.repository_interfaces.item_repository import ItemRepository
 from app.infrastructure.repositories.postgres_item_repository import PostgresItemRepository
 from app.services.item_service import ItemService
 

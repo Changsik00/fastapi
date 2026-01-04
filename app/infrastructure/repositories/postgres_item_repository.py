@@ -1,8 +1,8 @@
 from typing import List, Optional
 from sqlmodel import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel.ext.asyncio.session import AsyncSession
 from app.domain.models.item import Item, ItemCreate
-from app.domain.repository_interfaces.item import ItemRepository
+from app.domain.repository_interfaces.item_repository import ItemRepository
 
 class PostgresItemRepository(ItemRepository):
     def __init__(self, session: AsyncSession):
