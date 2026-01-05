@@ -94,7 +94,12 @@ async def recover_password(
     print(f"Token: {reset_token}")
     print(f"========================================")
     
-    return {"message": "If this email exists in our system, you will receive a reset instruction."}
+    # DEV ONLY: Return token in response for testing without email
+    # WARNING: Remove this in production!
+    return {
+        "message": "If this email exists in our system, you will receive a reset instruction.",
+        "reset_token": reset_token  # <--- DEV ONLY
+    }
 
 @router.post("/password/reset", response_model=UserResponse)
 async def reset_password(

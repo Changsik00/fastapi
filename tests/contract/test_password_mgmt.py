@@ -64,25 +64,9 @@ async def test_password_recovery_flow(client: AsyncClient):
     # 2. Request Recovery
     response = await client.post("/api/v1/auth/password/recover", json={"email": email})
     assert response.status_code == 200
-    # Note: In real test, we might mock AuthService.create_password_reset_token to capture the token.
-    # But here, we can't easily capture the printed token from console in this integration test 
-    # unless we mock the service or capture stdout.
-    # For now, let's verify the endpoint returns 200.
     
-    # To test RESET, we need a valid token. 
-    # Since we can't easily intercept the token generated inside the endpoint without mocking, 
-    # we will rely on a separate unit test for `reset_password` service logic 
-    # OR we can manually generate a token here using the same secret key?
-    # Yes, we can generate a valid token manually for testing purposes.
-    
-    from app.core.config import settings
-    from jose import jwt
-    from datetime import datetime, timedelta
-    
-    delta = timedelta(minutes=15)
-    expire = datetime.utcnow() + delta
-    to_encode = {"exp": expire, "sub": email, "type": "reset"}
-    fake_token = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    # DEV ONLY: Extract token from response (Mock Email Workflow)
+    fake_token = response.json()["reset_token"]
     
     # 3. Reset Password
     new_password = "newresetpassword"
