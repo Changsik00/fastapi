@@ -88,11 +88,11 @@ async def recover_password(
     
     # TODO: Send email via SMTP
     # For MVP, we print token to console/log
-    print(f"========================================")
+    print("========================================")
     print(f"[MOCK EMAIL] To: {body.email}")
-    print(f"Subject: Password Reset")
+    print("Subject: Password Reset")
     print(f"Token: {reset_token}")
-    print(f"========================================")
+    print("========================================")
     
     # DEV ONLY: Return token in response for testing without email
     # WARNING: Remove this in production!

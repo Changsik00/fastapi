@@ -1,8 +1,8 @@
 import pytest
 from httpx import AsyncClient
-from fastapi import status
 
-from app.domain.models.user import User
+
+
 
 @pytest.mark.asyncio
 async def test_change_password_success(client: AsyncClient):
