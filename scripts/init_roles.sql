@@ -1,19 +1,23 @@
--- DB Role Separation Script (Supabase/PostgreSQL)
--- This script creates two roles:
--- 1. migration_user: Has full DDL privileges (for CI/CD and Alembic).
--- 2. app_user: Has DML privileges only (for the running application).
--- 3. readonly_user: Has SELECT privilege only (for developers/analysts).
+-- [USAGE GUIDE]
+-- 1. Replace 'YOUR_SECURE_PASSWORD' and 'YOUR_READONLY_PASSWORD' with real passwords below.
+-- 2. Run the ENTIRE script at once (Top to Bottom).
+--    (This script is safe to re-run; it checks if users exist before creating them.)
 
--- Note: Replace 'YOUR_SECURE_PASSWORD' with actual strong passwords before running.
--- Note: In Supabase, you might need to run this in the SQL Editor.
+-- 1. Create app_user (Safe if exists)
+DO
+$do$
+BEGIN
+   IF NOT EXISTS (
+      SELECT FROM pg_catalog.pg_roles
+      WHERE  rolname = 'app_user') THEN
 
--- 1. Create Migration User (Owner of the schema/tables)
--- This user is already effectively the 'postgres' user, but let's define explicit grants if we create a separate one.
--- For simplicity in Supabase, we often use the default 'postgres' as the migration user.
--- But here is how to create a restricted app_user.
+      CREATE ROLE app_user LOGIN PASSWORD 'YOUR_SECURE_PASSWORD';
+   END IF;
+END
+$do$;
 
--- Create app_user
-CREATE USER app_user WITH PASSWORD 'YOUR_SECURE_PASSWORD';
+-- 2. Update password if needed (Optional, uncomment to force password update)
+-- ALTER USER app_user WITH PASSWORD 'YOUR_SECURE_PASSWORD';
 
 -- Grant Connect
 GRANT CONNECT ON DATABASE postgres TO app_user;
@@ -32,8 +36,19 @@ GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO app_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO app_user;
 
--- Create readonly_user (For humans/developers to inspect data safely)
-CREATE USER readonly_user WITH PASSWORD 'YOUR_READONLY_PASSWORD';
+-- 3. Create readonly_user (Safe if exists)
+DO
+$do$
+BEGIN
+   IF NOT EXISTS (
+      SELECT FROM pg_catalog.pg_roles
+      WHERE  rolname = 'readonly_user') THEN
+
+      CREATE ROLE readonly_user LOGIN PASSWORD 'YOUR_READONLY_PASSWORD';
+   END IF;
+END
+$do$;
+
 GRANT CONNECT ON DATABASE postgres TO readonly_user;
 GRANT USAGE ON SCHEMA public TO readonly_user;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly_user;
