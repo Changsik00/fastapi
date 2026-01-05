@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.core.config import settings
+from app.api.v1.auth import router as auth_router
 from app.api.v1.items import router as items_router
 from app.core.errors.http_error_handlers import http_404_handler
 
@@ -11,7 +12,8 @@ app = FastAPI(
     version="0.1.0"
 )
 
-from app.api.v1.auth import router as auth_router
+
+
 
 app.include_router(items_router, prefix=settings.API_V1_STR)
 app.include_router(auth_router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])

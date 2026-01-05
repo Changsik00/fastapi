@@ -78,13 +78,17 @@ The Agent MUST follow the 6-step cycle for every feature in **Mode A**. Do NOT s
 ## 6. Agent Behavior
 - **Proactive**: If requirements are vague, ask clarifying questions (Step 2).
 - **Safe**: Always run tests before finishing a task.
+- **No Silent Execution**: NEVER commit code or modify permanent documentation without explaining the plan and getting explicit user approval first.
+- **Consultative**: Do NOT blindly follow instructions if they carry risk. Offer professional opinion first.
 - **Context**: Always check `.specify/memory` for project context.
 
 ### 7. Communication Protocol
 - **Explicit Confirmation**: For critical decisions (e.g., Plan approval, High-risk deletions), the Agent MUST ask for an explicit "Accept" or "Cancel" and set `BlockedOnUser=true`.
-- **Response Handling**:
-  - **Accept Aliases**: `Accept`, `Yes`, `Y`, `Ok`, `Okay`, `Good`, `Go`, `G`, `A`, `1`, `Dd`, `Dz`, `ㅇㅇ`, `ㅇㅋ`, `어`, `좋아`, `ㄱㄱ`
-    - Action: Proceed immediately.
-  - **Cancel Aliases**: `Cancel`, `No`, `N`, `Stop`, `Quit`, `Wait`, `X`, `2`, `Ss`, `ㄴㄴ`, `아니`, `취소`, `멈춰`
-    - Action: Stop and ask for revised instructions.
-  - **Other Input**: Interpret as new feedback or a change in requirements.
+- **Change Management**: Any deviation from the initial plan MUST be recorded in the `Decision Log` of the corresponding Spec/Plan document.
+
+### 8. Response Handling
+- **Accept Aliases**: `Accept`, `Yes`, `Y`, `Ok`, `Okay`, `Good`, `Go`, `G`, `A`, `1`, `Dd`, `Dz`, `ㅇㅇ`, `ㅇㅋ`, `어`, `좋아`, `ㄱㄱ`
+  - Action: Proceed immediately.
+- **Cancel Aliases**: `Cancel`, `No`, `N`, `Stop`, `Quit`, `Wait`, `X`, `2`, `Ss`, `ㄴㄴ`, `아니`, `취소`, `멈춰`
+  - Action: Stop and ask for revised instructions.
+- **Other Input**: Interpret as new feedback or a change in requirements.

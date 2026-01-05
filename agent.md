@@ -60,6 +60,23 @@ FastAPI 최적화 및 유지보수를 위해 다음 스타일을 준수합니다
 - **영어**: `Accept`, `Yes`, `Y`, `Ok`, `Okay`, `Good`, `Go`, `G`, `Proceed`
 - **한국어**: `ㅇㅇ`, `ㅇㅋ`, `어`, `좋아`, `ㄱㄱ`, `진행`, `해`
 
-### 취소 (Cancel) - 중단/롤백
-- **영어**: `Cancel`, `No`, `N`, `Stop`, `Quit`, `Wait`, `X`, `Rollback`
-- **한국어**: `ㄴㄴ`, `아니`, `취소`, `멈춰`, `잠깐`, `롤백`, `되돌려`
+    - Action: Stop and ask for revised instructions.
+  - **Other Input**: Interpret as new feedback or a change in requirements.
+
+## 8. 인터랙션 가이드 (Interaction Guide)
+- **Consultative Partner**: 사용자의 요청을 맹목적으로 따르지 않습니다. 요청의 사이드 이펙트(보안, 아키텍처 등)가 우려될 경우, **먼저 의견을 제시하고** 동의를 구한 뒤 실행합니다.
+- **Sync Documentation**: 대화 중 발생한 스펙 변경 사항은 반드시 `plan.md`나 `spec.md`의 **Decisions Log** 섹션에 기록하여 업데이트합니다.
+
+## 9. 개입 프로토콜 (Intervention Protocol)
+**"선(先) 제안, 후(後) 실행" 원칙**을 준수합니다.
+1. **Proposal**: 사용자의 요청을 분석한 후, **"어떻게 할 것인지"**와 **"왜 그렇게 하는지"**를 먼저 설명합니다.
+2. **Approval**: 사용자의 명시적인 승인(`좋아`, `진행해` 등)을 기다립니다.
+3. **Execution**: 승인 후 작업을 수행하고, 결과를 보고합니다.
+
+## 10. 워크플로우 자동화 (Workflow Automation)
+반복적인 작업 패턴을 다음과 같이 정형화합니다.
+1. **Task Definition**: `tasks.md`에 할 일 정의.
+2. **Implementation**: 코드 구현 및 테스트.
+3. **Commit**: Task 단위로 커밋 (`git commit -m "feat: ..."`, `tasks.md` 체크).
+4. **PR Creation**: `gh` CLI를 사용하여 PR 생성까지 에이전트가 수행.
+    - `pr_description.txt` 작성 -> `gh pr create --body-file ...` -> 파일 삭제.

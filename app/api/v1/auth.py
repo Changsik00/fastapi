@@ -39,7 +39,7 @@ async def create_user(
     """
     try:
         user = await auth_service.signup(user_repo=user_repo, user_create_data=user_in)
-    except ValueError as e:
+    except ValueError:
          raise HTTPException(
             status_code=400,
             detail="The user with this email already exists in the system",

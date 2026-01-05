@@ -1,9 +1,19 @@
-from fastapi import Depends
+from typing import Annotated
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from jose import jwt, JWTError
+from pydantic import ValidationError
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from app.core.config import settings
 from app.core.database import get_session
+from app.domain.models.user import User, UserRole
 from app.domain.repository_interfaces.item_repository import ItemRepository
+from app.domain.repository_interfaces.user_repository import UserRepository
 from app.infrastructure.repositories.postgres_item_repository import PostgresItemRepository
+from app.infrastructure.repositories.postgres_user_repository import PostgresUserRepository
+from app.services.auth_service import AuthService
 from app.services.item_service import ItemService
 
 async def get_item_repository(
@@ -15,19 +25,6 @@ async def get_item_service(
     repo: ItemRepository = Depends(get_item_repository),
 ) -> ItemService:
     return ItemService(repo)
-
-# Auth Dependencies
-from typing import Annotated
-from fastapi import HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from jose import jwt, JWTError
-from pydantic import ValidationError
-
-from app.core.config import settings
-from app.domain.models.user import User, UserRole
-from app.domain.repository_interfaces.user_repository import UserRepository
-from app.infrastructure.repositories.postgres_user_repository import PostgresUserRepository
-from app.services.auth_service import AuthService
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/auth/login"
