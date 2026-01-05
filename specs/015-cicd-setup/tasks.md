@@ -5,9 +5,9 @@
     - [x] Draft `spec.md` <!-- id: 3 -->
     - [x] Draft `plan.md` (Approved) <!-- id: 4 -->
 
-- [ ] **Implementation** (Current Step) <!-- id: 5 -->
-    - [ ] Create `.github/workflows/ci.yml` <!-- id: 6 -->
+- [x] **Implementation** (Done) <!-- id: 5 -->
+    - [x] Create `.github/workflows/ci.yml` <!-- id: 6 -->
 
-- [ ] **Verification** <!-- id: 7 -->
-    - [ ] Push to GitHub <!-- id: 8 -->
-    - [ ] Confirm Action success <!-- id: 9 -->
+- [x] **Verification** (Done) <!-- id: 7 -->
+    - [x] Push to GitHub <!-- id: 8 -->
+    - [x] Confirm Action success <!-- id: 9 -->
